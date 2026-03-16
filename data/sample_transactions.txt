@@ -1,0 +1,20 @@
+# Sample financial transactions for testing
+# Mix of languages and currencies
+
+=== Personal Transactions - March 2025 ===
+
+Transferred 450,000 pesos to Maria Garcia for March rent payment.
+Paid 32 USD at Rappi for lunch delivery on Monday.
+Withdrew 200 euros from Santander ATM on Friday afternoon.
+Received salary deposit of 1,800,000 COP from Empresa ABC on the 1st.
+Paid 15,000 pesos at Exito supermarket for groceries.
+Sent 50 dollars to John via Nequi for the concert tickets.
+
+=== Business Transactions - March 2025 ===
+
+Client payment received: 5,000,000 COP from Startup XYZ for consulting.
+Paid 299 USD for AWS monthly subscription.
+Office supplies purchase: 85,000 pesos at Panamericana.
+Transferred 1,200 EUR to European supplier for equipment.
+Received 750 GBP from UK client for design work.
+Paid 45,000 COP for internet service to Claro Colombia.

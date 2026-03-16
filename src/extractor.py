@@ -119,18 +119,11 @@ def _extract_with_groq(text: str) -> ExtractionResult:
     return _parse_response(response.choices[0].message.content)
 
 # Provider registry — order defines priority
-# PROVIDERS = [
-#     ("gemini", _extract_with_gemini),
-#     ("groq", _extract_with_groq),
-#     ("anthropic", _extract_with_anthropic),
-#     ("openrouter", _extract_with_openrouter),
-# ]
-
 PROVIDERS = [
-    ("anthropic", _extract_with_anthropic),
-    ("openrouter", _extract_with_openrouter),
-    ("gemini", _extract_with_gemini),
     ("groq", _extract_with_groq),
+    ("anthropic", _extract_with_anthropic),
+    ("gemini", _extract_with_gemini),
+    ("openrouter", _extract_with_openrouter),
 ]
 
 def extract_transactions(text: str) -> ExtractionResult:

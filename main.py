@@ -6,9 +6,14 @@
 main.py
 
 """
-
+import sys
 from src.extractor import extract_transactions
 from src.models import TransactionType
+
+from src.utils import (
+    load_text_file, filter_comments, summarize_by_currency, summarize_by_type,
+    calculate_net_flow, export_to_json
+)
 
 ICONS = {
     TransactionType.TRANSFER: "↔",
@@ -17,49 +22,55 @@ ICONS = {
     TransactionType.DEPOSIT: "↓",
 }
 
-# SAMPLE_TEXT = """
-#     Yesterday I transferred 450,000 pesos to Maria for rent.
-#     Also paid 32,000 pesos at Rappi for lunch delivery.
-#     Withdrew 200,000 pesos from Bancolombia ATM on Friday.
-#     Received a deposit of 1,800,000 pesos from my employer on the 1st.
-# """
+DEFAULT_FILE = "data/sample_transactions.txt"
 
-# Multi-language, multi-currency test
-SAMPLE_TEXT = """
-    Yesterday I transferred 450,000 pesos colombianos to Maria for rent.
-    Also paid $32 dollars at Rappi for lunch delivery.
-    Retiré 200 euros en el cajero del Santander el viernes.
-    Received a deposit of 1,800,000 COP from my employer on the 1st.
-"""
-
-def print_result(result):
+def print_transactions(result):
+    """Print transactions in a readable format."""
     for t in result.transactions:
         icon = ICONS.get(t.transaction_type, "•")
-        print(f"  {icon} [{t.transaction_type.value.upper()}] "
-              f"{t.currency.value} {t.amount:,.0f} — {t.description}")
+        print(
+            f"  {icon} [{t.transaction_type.value.upper():10}] "
+            f"{t.currency.value:7} {t.amount:>12,.0f}  —  {t.description}"
+        )
         if t.merchant:
-            print(f"     Merchant : {t.merchant}")
+            print(f"     {'Merchant':10}: {t.merchant}")
         if t.date:
-            print(f"     Date     : {t.date}")
+            print(f"     {'Date':10}: {t.date}")
 
-    by_currency = {}
-    for t in result.transactions:
-        by_currency.setdefault(t.currency.value, []).append(t.amount)
+def print_summary(result):
+    """Print financial summary."""
+    print("\n  — By Currency —")
+    for currency, total in summarize_by_currency(result).items():
+        print(f"     {currency:7}: {total:>14,.0f}")
 
-    print("\n  Totals by currency:")
-    for currency, amounts in by_currency.items():
-        print(f"     {currency}: {sum(amounts):,.0f}")
+    print("\n  — By Type —")
+    for ttype, total in summarize_by_type(result).items():
+        print(f"     {ttype:12}: {total:>14,.0f}")
+
+    net = calculate_net_flow(result)
+    print("\n  — Net Flow (same currency only) —")
+    print(f"     Inflow  : {net['inflow']:>14,.0f}")
+    print(f"     Outflow : {net['outflow']:>14,.0f}")
+    print(f"     Net     : {net['net']:>14,.0f}")
 
     print(f"\n  Summary: {result.summary}")
-    print("\n--- Raw JSON ---")
-    print(result.model_dump_json(indent=2))
-
 
 def main():
-    print("Extracting transactions...\n")
-    result = extract_transactions(SAMPLE_TEXT)
-    print_result(result)
+    filepath = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_FILE
 
+    print(f"\n  Loading transactions from: {filepath}")
+    raw_text = load_text_file(filepath)
+    clean_text = filter_comments(raw_text)
+
+    print("  Extracting transactions...\n")
+    result = extract_transactions(clean_text)
+
+    print(f"  Found {result.total_transactions} transactions\n")
+    print_transactions(result)
+    print_summary(result)
+
+    export_to_json(result, "data/output.json")
+    print("\n  Done.\n")
 
 if __name__ == "__main__":
     main()
