@@ -183,6 +183,17 @@ structured-data-extraction/
 
 ---
 
+## Known Limitations
+
+| Issue | Example | Status |
+|---|---|---|
+| Decimal vs thousand separator ambiguity | `$89.99` → `8999.0` in some locales | Known — out of scope |
+| Future/hypothetical transactions included | `"Can you lend me $100?"` → extracted as transfer | Known — prompt improvement needed |
+| Missing amount transactions ignored | `"Payroll transfer (no amount)"` → correctly skipped | Expected behavior |
+| Ambiguous currency defaults to UNKNOWN | `"850 biweekly"` → `UNKNOWN` currency | Expected behavior |
+
+---
+
 ## License
 
 MIT — free to use, modify and distribute.
