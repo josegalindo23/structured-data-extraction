@@ -1,5 +1,5 @@
 """"
-mod
+src/models.py
 """
 from pydantic import BaseModel, Field
 from typing import Optional
@@ -26,7 +26,7 @@ class Currency(str, Enum):
 
 class Transaction(BaseModel):
     "Represents a financial transaction extracted from text."
-    amount: float = Field(description="Transaction amount in Colomnian pesos.")
+    amount: float = Field(description="Transaction amount — currency detected from context.")
     transaction_type: TransactionType = Field(description="Type of the transaction.")
     currency: Currency = Field(default=Currency.UNKNOWN, description="Currency of the transaction.")
     merchant: Optional[str] = Field(default=None, description="Merchant of recipient name.")
